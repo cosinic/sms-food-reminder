@@ -19,6 +19,8 @@ app.post('/sms', (req, res) => {
   reply = reply.replace(/ +/g, ' ').replace(/[^a-zA-Z ]/g, '');
   reply = reply.toUpperCase();
 
+  console.dir(reply);
+
   if(reply.length > 2) {
     reply = reply.split(' ');
     if (reply.indexOf('NO') > -1) {
