@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Food Reminder Admin</title>
+
+  <style>
+    html, body{
+        width: 100%;
+        height: 100%;
+        font-size: 16px;
+        overflow: hidden;
+	margin: 0;
+	padding: 0;
+    }
+    body > div{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+    }
+    input {
+        padding: 5px;
+        border: 1px solid #ccc;
+	margin-bottom: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+
+<div class="">
+    <input name="myNum" id="field__number" type="text" placeholder="Phone Number" />
+    <input name="myPass" id="field__password" type="password" placeholder="Password" />
+    <button type="button" id="button__send">Send</button>
+</div>
+
+<script type="text/javascript">
+  window.onload = function() {
+    
+    let field_pw = document.getElementById('field__password');
+    let field_num = document.getElementById('field__number');
+    let btn = document.getElementById('button__send');    
+
+    btn.addEventListener('click', checkAndSend);
+
+    field_pw.addEventListener('keydown', (e) => {
+        let key = e.which || e.keyCode;
+        if(key === 13)
+            btn.click();
+    });
+
+    function checkAndSend() {
+        let pw = field_pw.value;
+	let num = field_num.value;
+	if(pw && field_num) {
+	    sendRequest(pw, num);
+	}
+    }
+    
+    function sendRequest(pw, number) {
+	//console.log(pw);
+	//console.log(number);
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", '/sms/send', true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.onreadystatechange = function() { // Call a function when the state changes.
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                window.alert('Sent!');
+		field_pw.value = '';
+		field_num.value = '';
+            } else if (this.readyState === XMLHttpRequest.DONE && this.status === 401) {
+                window.alert('Password Incorrect');
+	    }
+        }
+	let str = "password=" + pw + "&number=" + number;
+	xhr.send(str);
+    }
+
+  }
+</script>
+
+</body>
+
+</html>
