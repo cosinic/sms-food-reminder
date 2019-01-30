@@ -14,7 +14,7 @@ router.post('/', (req, res, next) => {
 
   let number = req.body.From;
   console.dir(number + ': ' + reply);
-  
+
   let message = '';
   if (reply.indexOf('NAME') > -1) { //Most likely setting their name
     let name = req.app.reminders.setName(number, reply);
@@ -58,6 +58,7 @@ router.post('/send', (req, res) => {
     }
     res.status(401).send();
   }
+  res.status(400).send();
 });
 
 

@@ -32,6 +32,8 @@ window.onload = function () {
                 field_num.value = '';
             } else if (this.readyState === XMLHttpRequest.DONE && this.status === 401) {
                 window.alert('Password Incorrect');
+            } else if (this.readyState === XMLHttpRequest.DONE && this.status === 400) {
+                window.alert('Bad request');
             }
         }
         let str = "password=" + pw + "&number=" + number;
