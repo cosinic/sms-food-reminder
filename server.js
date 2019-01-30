@@ -16,8 +16,19 @@ let reminders = {};
 app.post('/sms', (req, res) => {
   //console.dir(req.body);
   let reply = req.body.Body;
-  reply = reply.replace(/[^a-zA-Z]/g, '');
+  reply = reply.replace(/ +/g, ' ').replace(/[^a-zA-Z ]/g, '');
   reply = reply.toUpperCase();
+
+  if(reply.length > 2) {
+    reply = reply.split(' ');
+    if (reply.indexOf('NO') > -1) {
+      reply = 'NO';
+    } else if(reply.indexOf('ATE') > -1) {
+      reply = 'ATE';
+    } else {
+      reply = 'invalid';
+    }
+  }
 
   let number = req.body.From;
   let message = handleReply(reply, number);
