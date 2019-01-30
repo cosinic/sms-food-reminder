@@ -92,11 +92,11 @@ function checkReminders() {
     let currentTime = new Date().valueOf();
     try {
         let allReminders = reminders_db.getData('/users');
-        console.dir(allReminders);
         for (let num in allReminders) {
             if ((currentTime - allReminders[num].time) / 6e4 >= 0) {
                 reminderController.sendToNumber(num);
                 reminderController.setReminder("NO", num);
+                console.dir("Reminding: " + num);
                 // reminders_db.delete('/users/' + num);
             }
         }
