@@ -34,6 +34,7 @@ let reminderController = {
             number = '+1' + number.replace(/[^0-9]/g, '');
         }
         if (which === 'NO') {
+            let currentHour = time.getHours();
             if (currentHour >= 23 || currentHour <= 8) {
                 // Too late/early to eat.
                 if (currentHour <= 23) {
