@@ -14,13 +14,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 let reminders = {};
 
 app.post('/sms', (req, res) => {
-  console.dir(req.body);
+  //console.dir(req.body);
   let reply = req.body.Body;
   reply = reply.replace(/[^a-zA-Z]/g, '');
+  reply = reply.toUpperCase();
 
   let number = req.body.From;
   let message = handleReply(reply, number);
-
+  console.dir(number + ': ' + reply);
   const twiml = new MessagingResponse();
   twiml.message(message);
   res.writeHead(200, {'Content-Type': 'text/xml'});
@@ -60,7 +61,7 @@ function handleReply(reply, num){
 	return "Okie, I'll remind you to eat again soon!"
         break;
     case 'ATE':
-	setReminder(reply. num);
+	setReminder(reply, num);
 	return "YAY! I'll remind you later when it's time to eat again!"
         break;
     default:
@@ -78,6 +79,12 @@ function setReminder(which, number) {
     let currentHour = time.getHours();
     if (currentHour >= 22 || currentHour <= 8) {
       // Too late/early to eat.
+      if(currentHour <= 23) {
+	time.setDate(time.getDate() + 1);
+      }
+      time.setHours(9);
+      time.setMinutes(0);
+      reminders[number] = time.valueOf();
     } else if (currentHour <= 10) {
       // Eat 4 hours later
       time.setHours(time.getHours() + 4);
@@ -94,12 +101,13 @@ function setReminder(which, number) {
       reminders[number] = time.valueOf();
     }
   }
+  console.dir(reminders);
 }
 
 function checkReminders() {
     let currentTime = new Date().valueOf();
     for (let num in reminders) {
-        if (Math.abs(currentTime - reminders[num]) / 6e4 >= 0) {
+        if ((currentTime - reminders[num]) / 6e4 >= 0) {
             sendToNumber(num);
 	    delete reminders[num];
 	}
