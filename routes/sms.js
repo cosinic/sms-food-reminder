@@ -6,14 +6,15 @@ require('dotenv').config({
   path: __dirname + '/../.env'
 });
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
   //console.dir(req.body);
   let reply = req.body.Body;
   reply = reply.replace(/ +/g, ' ').replace(/[^a-zA-Z ]/g, '');
   reply = reply.toUpperCase();
 
-  console.dir(reply);
-
+  let number = req.body.From;
+  console.dir(number + ': ' + reply);
+  
   let message = '';
   if (reply.indexOf('NAME') > -1) { //Most likely setting their name
     let name = req.app.reminders.setName(number, reply);
@@ -33,8 +34,6 @@ router.post('/', (req, res) => {
     message = req.app.reminders.handleReply(reply, number);
   }
 
-  let number = req.body.From;
-  console.dir(number + ': ' + reply);
   const twiml = new MessagingResponse();
   twiml.message(message);
   res.writeHead(200, {
