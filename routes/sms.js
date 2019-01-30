@@ -18,9 +18,26 @@ router.post('/', (req, res, next) => {
   let message = '';
   if (reply.indexOf('NAME') > -1) { //Most likely setting their name
     let name = req.app.reminders.setName(number, reply);
-    message = "Nice to meet you, " + name + "! From now on, I'll remind you to eat :)";
+    message = "Nice to meet you, " + name + "! From now on, I'll remind you to eat 😋";
     reply = name;
-  } else { //Replying to script
+  }
+  else if (reply.indexOf('UNSUBSCRIBE') > -1 || reply.indexOf('STOP') > -1) {
+    if (req.app.reminders.unsubscribe(number)) {
+      message = "You'll no longer receive reminders from me 😟\nIf you want to get reminders again, reply with 'SUBSCRIBE' or 'REMIND'.";
+    } else {
+      message = "You weren't subscribed in the first place 😕\nIf you want to get reminders again, reply with 'SUBSCRIBE' or 'REMIND'.";
+    }
+    reply = "STOP";
+  }
+  else if (reply.indexOf('SUBSCRIBE') > -1 || reply.indexOf('REMIND') > -1){
+    if (req.app.reminders.subscribe(number)) {
+      message = "YAY! I'll do my best to remind you to eat 😁\nIf you don't want me to bother you, reply with 'UNSUBSCRIBE' or 'STOP'.";
+    } else {
+      message = "You are already subscribed 😄\nIf you don't want me to bother you, reply with 'UNSUBSCRIBE' or 'STOP'.";
+    }
+    reply = "SUBSCRIBE";
+  }
+  else { //Replying to script
     if (reply.length > 2) {
       reply = reply.split(' ');
       if (reply.indexOf('NO') > -1) {

@@ -65,7 +65,7 @@ let sms_handler = {
 
 			client.messages
 				.create({
-					body: name + ", it's time to eat!\nReply 'ATE' if you have eaten.\nOtherwise, I'll remind you in an hour :P",
+					body: name + ", it's time to eat!\nReply 'ATE' if you have eaten.\nOtherwise, I'll remind you in an hour 😉",
 					from: twilio_number,
 					mediaUrl: media_pic,
 					to: to_number
@@ -77,7 +77,7 @@ let sms_handler = {
 			function checkNoName() {
 				if (name === 'Hey') {
 					client.messages.create({
-							body: "Can I get your name by the way?\nReply 'My name is ____' with your name so I can remember it! ^_^",
+							body: "Can I get your name by the way?\nReply 'My name is ____' with your name so I can remember it! 😊",
 							from: twilio_number,
 							to: to_number
 						})
@@ -88,6 +88,19 @@ let sms_handler = {
 			}
 
 		});
+	},
+
+	reloadDatabase(which) {
+		switch (which) {
+			case 'user':
+				user_db.reload();
+				break;
+			case 'media':
+				media_db.reload();
+				break;
+			default:
+				break;
+		}
 	}
 }
 

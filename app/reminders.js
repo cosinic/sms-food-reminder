@@ -19,12 +19,12 @@ let reminderController = {
         switch (reply) {
             case 'NO':
                 this.setReminder(reply, num);
-                return "Okie, I'll remind you to eat again soon!";
+                return "Okie, I'll remind you to eat again!";
             case 'ATE':
                 this.setReminder(reply, num);
                 return "YAY! I'll remind you later when it's time to eat again!";
             default:
-                return "I'm a simple computer. I don't understand anything except ATE or NO until James programs me to do something more :(";
+                return "I'm a simple program. I don't understand what you wrote until James programs me to 😔";
         }
     },
 
@@ -34,7 +34,16 @@ let reminderController = {
             number = '+1' + number.replace(/[^0-9]/g, '');
         }
         if (which === 'NO') {
-            time.setHours(time.getHours() + 1);
+            if (currentHour >= 23 || currentHour <= 8) {
+                // Too late/early to eat.
+                if (currentHour <= 23) {
+                    time.setDate(time.getDate() + 1);
+                }
+                time.setHours(9);
+                time.setMinutes(0);
+            } else {
+                time.setHours(time.getHours() + 1);
+            }
             reminders_db.push('/users/' + number, {
                 time: time.valueOf()
             });
@@ -83,7 +92,43 @@ let reminderController = {
 
         if (name && number) {
             user_db.push('/users/' + number + '/name', name);
+            sms_sender.reloadDatabase('user');
             return name;
+        }
+    },
+
+    subscribe(number) {
+        if (number.indexOf('+1') < 0) {
+            number = '+1' + number.replace(/[^0-9]/g, '');
+        }
+        try {
+            let subscriber = reminders_db.getData('/users/' + number);
+            if(subscriber) {
+                return false;
+            } else {
+                reminderController.setReminder("NO", number);
+                return true;
+            }
+        } catch (error) {
+            reminderController.setReminder("NO", number);
+            return true;
+        }
+    },
+
+    unsubscribe(number) {
+        if (number.indexOf('+1') < 0) {
+            number = '+1' + number.replace(/[^0-9]/g, '');
+        }
+        try {
+            let subscriber = reminders_db.getData('/users/' + number);
+            if (subscriber) {
+                reminders_db.delete('/users/' + number);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            return false;
         }
     }
 }
