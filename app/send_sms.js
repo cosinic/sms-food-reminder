@@ -28,6 +28,14 @@ let sms_handler = {
 			to_number = '+1' + number.replace(/[^0-9]/g, '');
 		}
 		let which_media = 'default';
+
+		let name = 'Hey';
+		try {
+			name = user_db.getData('/users/' + to_number + '/name');
+		} catch (error) {
+			name = 'Hey';
+		}
+
 		let randomNumPromise = new Promise((resolve, reject) => {
 			try {
 				let media = media_db.getData('/media');
@@ -54,13 +62,6 @@ let sms_handler = {
 				} catch (error) {
 					media_pic = default_media[random];
 				}
-			}
-
-			let name = 'Hey';
-			try {
-				name = user_db.get('/users/' + to_number + '/name');
-			} catch (error) {
-				name = 'Hey';
 			}
 
 			client.messages
