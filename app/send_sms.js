@@ -68,7 +68,7 @@ let sms_handler = {
 				.create({
 					body: name + ", it's time to eat!\nReply 'ATE' if you have eaten.\nOtherwise, I'll remind you in an hour 😉",
 					from: twilio_number,
-					mediaUrl: media_pic,
+					//mediaUrl: media_pic,
 					to: to_number
 				})
 				.then(message => console.log(message.sid))
